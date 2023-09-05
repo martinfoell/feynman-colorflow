@@ -1,0 +1,61 @@
+\documentclass[margin=1cm,varwidth]{standalone}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{pgffor}
+\usepackage{tikz}
+\usepackage{xstring}
+
+\usepackage{../feynman-colorflow}
+\begin{document}
+
+\tikzset{feynman/.pic={
+    \def\fn{0}
+    \def\gn{0}
+    \def\bn{0}
+    \coordinate (O) at (0,0);
+    F1 = \Fermion{(O)}{<}{-180}{0}{0}{midway=0.4}{1.15}{\(q_1\)}
+    F2 = \Fermion{(O)}{>}{-90}{0}{0}{right=0.2}{0.5}{\({q}_2\)}
+    B1 = \Boson{(F2)}{-1}{0}{1}{0}{midway=0.25}{1.15}{\(Z\)}    
+    F3 = \Fermion{(F2)}{>}{-90}{1}{0}{right=0.2}{0.5}{\(q_3\)}
+    F5 = \Fermion{(F3)}{>}{-0.1}{1}{0}{midway=0.2}{1.15}{\({q}_4\)}  
+    G1 = \Gluon{(F3)}{1}{-180}{1}{0}{below}{1.15}{\(g_1\)}
+    G2 = \Gluon{(O)}{-1}{1}{1}{0}{above=0.25}{0.5}{\(g_2\)}
+    G3 = \Gluon{(G2)}{-1}{45}{1}{0}{midway=0.25}{1.15}{\(g_3\)}
+    G4 = \Gluon{(G2)}{-1}{-45}{1}{0}{midway=0.25}{1.15}{\(g_4\)}
+    F6 = \Fermion{(F1)}{}{0}{0}{0}{midway=0.4}{1.15}{}
+  }
+}
+
+\section*{Without color flow}
+\label{sec:without-color}
+
+\begin{tikzpicture}[scale=1]  
+  \pic{feynman};
+\end{tikzpicture}
+
+
+\section*{With color flow}
+\begin{tikzpicture}[scale=1]  
+  \pic{feynman};
+  % color
+  F1 = \ColorLineEnd{F1}{F5}{G2}{>}{red}{0.25}{R}
+  G2 = \ColorLine{F1}{F5}{G2}{G3}{>}{red}{0.25}
+  G3 = \ColorLineEnd{G3}{G2}{F5}{<}{red}{0.25}{L}
+  
+  G1 = \ColorLineEnd{G1}{F3}{F4}{>}{brown}{0.25}{L}
+  F4 = \ColorLineEnd{F4}{F3}{G1}{<}{brown}{0.25}{R}
+  
+  G1 = \ColorLineEnd{G1}{F3}{F2}{<}{blue}{0.25}{R}
+  F3 = \ColorLineEnd{F2}{F3}{G1}{>}{blue}{0.25}{R}
+  F2 = \ColorLineEnd{F2}{F5}{F1}{<}{blue}{0.25}{R}
+  G2 = \ColorLineCross{F1}{F5}{F2}{G2}{G4}{<}{blue}{0.25}
+  G4 = \ColorLineEnd{G4}{G2}{F5}{>}{blue}{0.25}{R}
+
+  G3 = \ColorLineEnd{G3}{G2}{G4}{>}{green}{0.25}{R}
+  G4 = \ColorLineEnd{G4}{G2}{G3}{<}{green}{0.25}{L}
+  
+\end{tikzpicture}
+
+\end{document}

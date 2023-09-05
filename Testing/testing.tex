@@ -1,0 +1,33 @@
+\documentclass[margin=1cm,varwidth]{standalone}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{pgffor}
+\usepackage{tikz}
+\usepackage{xstring}
+
+\newcommand{\myarray}{Apple, Banana, Cherry, Date}
+
+\usepackage{../feynman-colorflow}
+\begin{document}
+
+% \customcommand{Yes} % This will print "This is the true branch"
+\tikzmath{\r1=0.05; \rr=0.01; }
+\begin{tikzpicture}
+  \def\fn{0}
+  \def\gn{0}
+  \def\bn{0}
+  \coordinate (V1) at (0,0);
+  \coordinate (V2) at (0,5);
+  % \Vertex{V1}{0}{135}{-135}
+  \test{{10,f,b}}{V1}{{f,10,-135}}
+  \VertexF{V2}{{0,135,-135}}
+  \ParticleA{f}{V1}{10}
+  % \ParticleA{F}{20}
+  % \Particle{f}{(V2)}{<}{-180}{0}{0}{midway=0.4}{1.15}{\(q_1\)}
+  % \VertexE{0&90&30}{1}
+\end{tikzpicture}
+
+
+\end{document}
