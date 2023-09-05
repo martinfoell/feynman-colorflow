@@ -7,8 +7,13 @@
 \usepackage{tikz}
 \usepackage{xstring}
 
+\newcommand{\myarray}{Apple, Banana, Cherry, Date}
+
 \usepackage{../feynman-colorflow}
 \begin{document}
+
+\tikzmath{\r1=0.05; \rr=0.01; }
+
 
 \tikzset{feynman/.pic={
     \def\fn{0}
