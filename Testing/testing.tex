@@ -4,30 +4,82 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{pgffor}
+\usepackage{calc}
 \usepackage{tikz}
 \usepackage{xstring}
-
-\newcommand{\myarray}{Apple, Banana, Cherry, Date}
+\usepackage{listofitems}
+\usepackage{fp}
+\usepackage{pgf}
 
 \usepackage{../feynman-colorflow}
-\begin{document}
 
-% \customcommand{Yes} % This will print "This is the true branch"
+\newcommand{\addIfNegative}[1]{%
+    \ifnum#1<0
+        \the\numexpr#1+360\relax
+    \else
+        #1
+    \fi
+}
+
+\newcommand{\smallest}[2]{%
+    \ifnum#1<#2
+        #1
+    \else
+        #2
+    \fi
+}
+
+\newcommand{\biggest}[2]{%
+    \ifnum#1<#2
+        #2
+    \else
+        #1
+    \fi
+}
+
+\newcommand{\SharedCoordinate}[5]{
+  \pgfmathsetmacro{\angle}{abs(\addIfNegative{#3} - \addIfNegative{#4})/2}
+  \pgfmathsetmacro{\radius}{#5/sin(\angle)}
+  \pgfmathsetmacro{\xcoord}{\radius*cos(\smallest{\addIfNegative{#3}}{\addIfNegative{#4}}+\angle)}
+  \pgfmathsetmacro{\ycoord}{\radius*sin(\smallest{\addIfNegative{#3}}{\addIfNegative{#4}}+\angle)}  
+
+  \coordinate (#1) at ($ (#2) + (\xcoord, \ycoord) $);
+}
+
+
+\begin{document}
 \tikzmath{\r1=0.05; \rr=0.01; }
 \begin{tikzpicture}
-  \def\fn{0}
-  \def\gn{0}
-  \def\bn{0}
-  \coordinate (V1) at (0,0);
-  \coordinate (V2) at (0,5);
-  % \Vertex{V1}{0}{135}{-135}
-  \test{{10,f,b}}{V1}{{f,10,-135}}
-  \VertexF{V2}{{0,135,-135}}
-  \ParticleA{f}{V1}{10}
-  % \ParticleA{F}{20}
-  % \Particle{f}{(V2)}{<}{-180}{0}{0}{midway=0.4}{1.15}{\(q_1\)}
-  % \VertexE{0&90&30}{1}
+  \coordinate (O) at (0,0);
+  \VertexStart{V1}{f,F,G}{200,110,0}
+  \VertexCont{V2}{V1}{0}{G,G}{-45,45}
+  \VertexCont{V3}{V2}{-45}{G,G}{-110,20}
+  
+  \SharedCoordinate{S1}{V1}{210}{110}{0.4}
+  \draw[fill=red,draw=red] (S1) circle [radius=\r1];
+  \SharedCoordinate{S11}{V1}{210}{0}{0.4}
+  \draw[fill=red,draw=red] (S11) circle [radius=\r1];
+  
+  \SharedCoordinate{S2}{V2}{-180}{-45}{0.4}
+  \draw[fill=red,draw=red] (S2) circle [radius=\r1];
+  \SharedCoordinate{S3}{V3}{-110}{135}{0.4}
+  \draw[fill=red,draw=red] (S3) circle [radius=\r1];
+
+  \coordinate (S11) at ($ (V1) + ({2*cos(110+atan(0.4/2))},{2*sin(110+atan(0.4/2))}) $);
+  \draw[fill=red,draw=red] (S11) circle [radius=\r1];
+
+  \coordinate (S12) at ($ (V1) + 0.2*({2*cos(270},{2*sin(270}) $);
+  \draw[fill=red,draw=red] (S12) circle [radius=\r1];
+  
 \end{tikzpicture}
 
+\begin{tikzpicture}
+  \coordinate (O) at (0,0);
+  \VertexStart{V1}{f,F,G}{-180,-90,0}
+  \VertexCont{V2}{V1}{0}{G,G}{-45,45}
+  \VertexCont{V3}{V1}{-90}{f,B}{-90,0}
+  \VertexCont{V4}{V3}{-90}{f,G}{-180,0}
+  \draw[color=red, line width = \s, decoration={markings, mark=at position 0.5 with {\arrow{>}}}, postaction={decorate}] (V1)--(V2);
+\end{tikzpicture}
 
 \end{document}

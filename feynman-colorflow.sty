@@ -132,7 +132,8 @@
   
 }
 
-\newcommand{\ParticleA}[3]
+
+\newcommand{\Particle}[3]
 {
   \ifthenelse{\equal{#1}{f}}{
     \Fermion{(#2)}{<}{#3}{1}{0}{midway=0.4}{1.15}{\(q_1\)}}{
@@ -140,42 +141,44 @@
   \ifthenelse{\equal{#1}{F}}{
     \Fermion{(#2)}{>}{#3}{1}{0}{midway=0.4}{1.15}{\(q_1\)}}{
   }
-}
-
-\newcommand{\test}[3]
-{
-  \def\ParticleType{#1}
-  \def\Angle{#2}
-  \ParticleA{\ParticleType[0]}{#3}{\Angle[0]}
-  \ParticleA{\ParticleType[1]}{#3}{\Angle[1]}
-  \ParticleA{\ParticleType[2]}{#3}{\Angle[2]}
-}
-
-\newcommand{\Particle}[1]
-{
-  \ifthenelse{\equal{#1}{Yes}}{
-    \node at (0,0) {This is a node};}{
+  \ifthenelse{\equal{#1}{b}}{
+    \Boson{(#2)}{1}{#3}{1}{0}{midway=0.4}{1.15}{\(q_1\)}}{
+  }
+  \ifthenelse{\equal{#1}{B}}{
+    \Boson{(#2)}{-1}{#3}{1}{0}{midway=0.4}{1.15}{\(q_1\)}}{
+  }
+  \ifthenelse{\equal{#1}{g}}{
+    \Gluon{(#2)}{1}{#3}{1}{0}{midway=0.4}{1.15}{\(q_1\)}}{
+  }
+  \ifthenelse{\equal{#1}{G}}{
+    \Gluon{(#2)}{-1}{#3}{1}{0}{midway=0.4}{1.15}{\(q_1\)}}{
   }
 }
+
+
+\newcommand{\VertexStart}[3]
+{
+  \coordinate (#1) at (0,0);
+  \readlist\ParticleType{#2}
+  \readlist\Angle{#3}
+  \Particle{\ParticleType[1]}{#1}{\Angle[1]}
+  \Particle{\ParticleType[2]}{#1}{\Angle[2]}
+  \Particle{\ParticleType[3]}{#1}{\Angle[3]}
+  \Particle{\ParticleType[4]}{#1}{\Angle[4]}
+}
+
+\newcommand{\VertexCont}[5]
+{
+  \coordinate (#1) at ($ (#2) + ({2*cos(#3)},{2*sin(#3)}) $);
+  \readlist\ParticleType{#4}
+  \readlist\Angle{#5}
+  \Particle{\ParticleType[1]}{#1}{\Angle[1]}
+  \Particle{\ParticleType[2]}{#1}{\Angle[2]}
+  \Particle{\ParticleType[3]}{#1}{\Angle[3]}
+  \Particle{\ParticleType[4]}{#1}{\Angle[4]}
+}
+
   
-\newcommand{\Vertex}[4]
-{
-  \Fermion{(#1)}{<}{#2}{1}{0}{midway=0.4}{1.15}{\(q_1\)}
-  \Fermion{(#1)}{>}{#3}{1}{0}{right=0.2}{0.5}{\({q}_2\)}
-  \Boson{(#1)}{-1}{#4}{1}{0}{midway=0.25}{1.15}{\(Z\)}    
-
-}
-
-
-\newcommand{\VertexF}[2]
-{
-  \def\Angle{#2}
-  \Fermion{(#1)}{<}{\Angle[0]}{1}{0}{midway=0.4}{1.15}{\(q_1\)}
-  \Fermion{(#1)}{>}{\Angle[1]}{1}{0}{right=0.2}{0.5}{\({q}_2\)}
-  \Boson{(#1)}{-1}{\Angle[2]}{1}{0}{midway=0.25}{1.15}{\(Z\)}    
-
-}
-
 \newcommand{\Annhilation}[4]
 {
   \FermionNew{(#1)}{<}{-180+#2}{1}{0}{midway=0}{1.15}{#3}
