@@ -9,7 +9,7 @@
 \usepackage{ifthen}
 \usepackage{environ}
 \usepackage{xargs}
-
+\usepackage{datatool}
 \usetikzlibrary{calc}
 \usetikzlibrary{math} %needed tikz library
 \usetikzlibrary{positioning}
@@ -155,21 +155,64 @@
   }
 }
 
+\DTLnewdb{particles}
 
-\newcommand{\VertexStart}[3]
+% Add entries to the dictionary
+\DTLnewrow{particles}
+\DTLnewdbentry{particles}{key}{f}
+\DTLnewdbentry{particles}{value}{Fermion}
+
+\DTLnewrow{particles}
+\DTLnewdbentry{particles}{key}{b}
+\DTLnewdbentry{particles}{value}{Boson}
+
+\DTLnewrow{particles}
+\DTLnewdbentry{particles}{key}{g}
+\DTLnewdbentry{particles}{value}{Gluon}
+
+\newcommand{\searchDictionary}[2]{%
+    \DTLfetch{#1}{key}{#2}{value}%
+}
+
+\newcommand{\myList}[2]{%
+  \expandafter\readlist\csname #1\endcsname{#2}%
+}
+
+
+\newcommand{\firstvertex}[3]
 {
   \coordinate (#1) at (0,0);
   \readlist\ParticleType{#2}
-  \readlist\Angle{#3}
-  \Particle{\ParticleType[1]}{#1}{\Angle[1]}
-  \Particle{\ParticleType[2]}{#1}{\Angle[2]}
-  \Particle{\ParticleType[3]}{#1}{\Angle[3]}
-  \Particle{\ParticleType[4]}{#1}{\Angle[4]}
+  \expandafter\readlist\csname #1Angle\endcsname{#3} % Create a dynamic list name
+  \Particle{\ParticleType[1]}{#1}{\csname #1Angle\endcsname[1]}
+  \Particle{\ParticleType[2]}{#1}{\csname #1Angle\endcsname[2]}
+  \Particle{\ParticleType[3]}{#1}{\csname #1Angle\endcsname[3]}
+  \Particle{\ParticleType[4]}{#1}{\csname #1Angle\endcsname[4]}
 }
 
-\newcommand{\VertexCont}[5]
+\newcommand{\vertex}[5]
 {
+  % \expandafter\readlist\csname #2Angle\endcsname;
+  \coordinate (#1) at ($ (#2) + ({2*cos(\csname #2Angle\endcsname[#3])},{2*sin(\csname #2Angle\endcsname[#3])}) $);
+  \readlist\ParticleType{#4}
+  \expandafter\readlist\csname #1Angle\endcsname{#5} % Create a dynamic list name
+  \Particle{\ParticleType[1]}{#1}{\csname #1Angle\endcsname[1]}
+  \Particle{\ParticleType[2]}{#1}{\csname #1Angle\endcsname[2]}
+  \Particle{\ParticleType[3]}{#1}{\csname #1Angle\endcsname[3]}
+  \Particle{\ParticleType[4]}{#1}{\csname #1Angle\endcsname[4]}
+  
+  % \readlist\Angle{#5}
+  % \Particle{\ParticleType[1]}{#1}{\Angle[1]}
+  % \Particle{\ParticleType[2]}{#1}{\Angle[2]}
+  % \Particle{\ParticleType[3]}{#1}{\Angle[3]}
+  % \Particle{\ParticleType[4]}{#1}{\Angle[4]}
+}
+
+\newcommand{\VertexContA}[5]
+{
+
   \coordinate (#1) at ($ (#2) + ({2*cos(#3)},{2*sin(#3)}) $);
+  \expandafter\readlist\csname #1Angle\endcsname{#3} 
   \readlist\ParticleType{#4}
   \readlist\Angle{#5}
   \Particle{\ParticleType[1]}{#1}{\Angle[1]}
@@ -177,6 +220,56 @@
   \Particle{\ParticleType[3]}{#1}{\Angle[3]}
   \Particle{\ParticleType[4]}{#1}{\Angle[4]}
 }
+
+
+\newcommand{\VertexStartA}[5]
+{
+
+  \coordinate (#1) at (0,0);
+  \readlist\ParticleType{#2}
+  % \myList{\#1}{#3}
+  \readlist#5{#3} % Use #5 to specify the list name for Angle
+  \Particle{\ParticleType[1]}{#1}{#5[1]}
+  \Particle{\ParticleType[2]}{#1}{#5[2]}
+  \Particle{\ParticleType[3]}{#1}{#5[3]}
+  \Particle{\ParticleType[4]}{#1}{#5[4]}  
+  % \readlist\Angle{#3}
+  % \Particle{\ParticleType[1]}{#1}{\Angle[1]}
+  % \Particle{\ParticleType[2]}{#1}{\Angle[2]}
+  % \Particle{\ParticleType[3]}{#1}{\Angle[3]}
+  % \Particle{\ParticleType[4]}{#1}{\Angle[4]}
+  
+  % \Particle{\ParticleType[1]}{#1}{\csname \#1\endcsname[1]}
+  % \Particle{\ParticleType[2]}{#1}{\csname \#1\endcsname[2]}
+  % \Particle{\ParticleType[3]}{#1}{\csname \#1\endcsname[3]}
+  % \Particle{\ParticleType[4]}{#1}{\csname \#1\endcsname[4]}
+  % \Particle{\ParticleType[2]}{#1}{\A#1[2]}
+  % \Particle{\ParticleType[3]}{#1}{\A#1[3]}
+  % \Particle{\ParticleType[4]}{#1}{\A#1[4]}
+  % \def\pl{#3}
+  % \readlist\pl
+  % \readlist\ParticleName{#4}
+  % \ParticleName[1]
+  % \DTLnewdb{DV1}
+  
+  % \DTLnewrow{DV1}
+  % \DTLnewdbentry{DV1}{key}{\ParticleName[1]}
+  % \DTLnewdbentry{DV1}{value}{\Angle[1]}
+
+  % \DTLnewrow{DV1}
+  % \DTLnewdbentry{DV1}{key}{\ParticleName[2]}
+  % \DTLnewdbentry{DV1}{value}{\Angle[2]}
+
+  % \DTLnewrow{DV1}
+  % \DTLnewdbentry{DV1}{key}{\ParticleName[3]}
+  % \DTLnewdbentry{DV1}{value}{\Angle[3]}
+
+  % \DTLnewrow{DV1}
+  % \DTLnewdbentry{DV1}{key}{\ParticleName[4]}
+  % \DTLnewdbentry{DV1}{value}{\Angle[4]}
+  
+}
+
 
   
 \newcommand{\Annhilation}[4]
