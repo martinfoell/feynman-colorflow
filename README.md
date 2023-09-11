@@ -2,6 +2,9 @@
 ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/example.png)
 # Install
 
+```bash
+git clone https://github.com/martinfoell/feynman-colorflow.git
+```
 # Basic usage
 ```latex
 \documentclass{article}
