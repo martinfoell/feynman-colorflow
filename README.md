@@ -31,7 +31,7 @@ The particles that are included in the package are given in the table below.
 | Boson (minus) | B        | ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/images/boson2.png)|
 | Gluon (plus) | g        | ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/images/gluon1.png)|
 | Gluon (minus) | G        | ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/images/gluon2.png)|
-| Higgs | H        | ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/images/higgs.png)|
+| Higgs | H        | ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/images/higgs1.png)|
 
 
 
