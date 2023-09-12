@@ -28,7 +28,6 @@ The particles that are included in the package are given in the table below.
 | Fermion (incomming) | f        | ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/images/fermion1.png)|
 | Fermion (outgoing) | F        | ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/images/fermion2.png)|
 | Boson (plus) | b        | ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/images/boson1.png)|
-| Boson (minus) | b        | ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/images/boson2.png)|
 | Boson (minus) | B        | ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/images/boson2.png)|
 | Gluon (plus) | g        | ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/images/gluon1.png)|
 | Gluon (minus) | G        | ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/images/gluon2.png)|
