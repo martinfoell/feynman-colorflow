@@ -1,0 +1,46 @@
+\documentclass[margin=1cm,varwidth]{standalone}
+\usepackage{../feynman-colorflow}
+\usetikzlibrary{external}
+\tikzexternalize % activate!
+\begin{document}
+
+\tikzsetnextfilename{incomming-fermion}
+\begin{tikzpicture}
+  \firstvertex{V1}{f}{-180}
+\end{tikzpicture}
+
+\tikzsetnextfilename{outgoing-fermion}
+\begin{tikzpicture}
+  \firstvertex{V1}{F}{-180}
+\end{tikzpicture}
+
+\tikzsetnextfilename{boson-1}
+\begin{tikzpicture}
+  \firstvertex{V1}{B}{-180}
+\end{tikzpicture}
+
+\tikzsetnextfilename{boson-2}
+\begin{tikzpicture}
+  \firstvertex{V1}{b}{-180}
+\end{tikzpicture}
+
+\tikzsetnextfilename{gluon-1}
+\begin{tikzpicture}
+  \firstvertex{V1}{g}{-180}
+\end{tikzpicture}
+
+\tikzsetnextfilename{gluon-2}
+\begin{tikzpicture}
+  \firstvertex{V1}{G}{-180}
+\end{tikzpicture}
+
+\tikzsetnextfilename{higgs}
+\begin{tikzpicture}
+  \firstvertex{V1}{H}{-180}
+\end{tikzpicture}
+
+\end{document}
+
+%%% Local Variables: 
+%%% TeX-command-extra-options: "-shell-escape"
+%%% End:
