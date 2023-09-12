@@ -25,5 +25,5 @@ The particles that are included in the package are given in the table below.
 
 | Particle    | Picture                                                                                   |
 | -------- | ----------------------------------------------------------------------------------------- |
-| Higgs  | ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/images/higgs-1.png)|
+| Higgs  | ![alt text](https://github.com/martinfoell/feynman-colorflow/blob/main/images/higgs.pdf)|
 
