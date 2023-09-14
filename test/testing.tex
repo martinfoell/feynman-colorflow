@@ -1,0 +1,300 @@
+\documentclass[margin=1cm,varwidth]{standalone}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{pgffor}
+\usepackage{calc}
+\usepackage{tikz}
+\usepackage{xstring}
+\usepackage{listofitems}
+\usepackage{fp}
+\usepackage{pgf}
+\usepackage{xfp}
+\usepackage{../feynman-colorflow}
+
+
+\newcommand{\addIfNegative}[1]{%
+    \ifnum#1<0
+        \the\numexpr#1+360\relax
+    \else
+        #1
+    \fi
+}
+
+\newcommand{\smallest}[2]{%
+    \ifnum#1<#2
+        #1
+    \else
+        #2
+    \fi
+}
+
+\newcommand{\biggest}[2]{%
+    \ifnum#1<#2
+        #2
+    \else
+        #1
+    \fi
+}
+
+% \newcommand{\addIfNegative}[1]{\fpeval{#1 < 0 ? #1 + 360 : #1}}
+% \newcommand{\biggest}[2]{\fpeval{#1 > #2 ? #1 : #2}}
+% \newcommand{\smallest}[2]{\fpeval{#1 < #2 ? #1 : #2}}
+
+\newcommand{\compareAngles}[2]{%
+  \edef\angleA{\addIfNegative{#1}}
+  \edef\angleB{\addIfNegative{#2}}
+  
+  \ifnum\fpeval{abs(\angleA - \angleB) > 180}=1
+    \fpeval{\biggest{\angleA}{\angleB}}
+  \else
+    \fpeval{\smallest{\angleA}{\angleB}}
+  \fi
+}
+
+% \newcommand{\compareNumbers}[2]{%
+%     \ifnum\fpeval{abs(\addIfNegative{#1} - \addIfNegative{#2}) > 180}=1
+%       \fpeval{(360 - abs(\addIfNegative{#1} - \addIfNegative{#2}))/2}
+%     \else
+%       \fpeval{abs(\addIfNegative{#1} - \addIfNegative{#2})/2}
+%     \fi
+% }
+
+% \newcommand{Smallest}[2]
+% {
+%   \ifthenelse{abs(\addIfNegative{#1} - \addIfNegative{#2}) < 180}
+%     \addIfNegative{\smallest{#1}{#2}}
+%   \ifthenelse{abs(\addIfNegative{#1} - \addIfNegative{#2}) > 180}
+%     \addIfNegative{\biggest{#1}{#2}}
+%   }
+
+\newcommand{\Smallest}[2]{%
+  \ifthenelse{abs(\addIfNegative{#1} - \addIfNegative{#2}) < 180}{%
+    \addIfNegative{\smallest{#1}{#2}}%
+  }{%
+    \ifthenelse{abs(\addIfNegative{#1} - \addIfNegative{#2}) > 180}{%
+      \addIfNegative{\biggest{#1}{#2}}%
+    }{%
+      % Handle the case when the absolute difference is exactly 180.
+      % You can add code for this situation if needed.
+    }%
+  }%
+}  
+
+% \newcommand{\TTest}[2]
+% {
+%   \ifthenelse{#1>#2}{#2}
+%   \ifthenelse{#1<#2}{#1}
+% }
+
+\newcommand{\TTestA}[2]{%
+  \ifthenelse{abs(\addIfNegative{#1} - \addIfNegative{#2}) < 180}{%
+    #2% Return #2 if #1 is greater
+  }{%
+    \ifthenelse{#1 < #2}{%
+      #1% Return #1 if #2 is greater
+    }{%
+      % Handle the case when #1 and #2 are equal (you can add code or logic here)
+    }%
+  }%
+}
+\newcommand{\convertNegativeAngle}[1]{%
+  \ifnum#1<0
+    \the\numexpr#1+360\relax
+  \else
+    #1
+  \fi
+}
+
+
+\newcommand{\TTest}[2]{%
+  \def\angleA{\convertNegativeAngle{#1}}
+  \def\angleB{\convertNegativeAngle{#2}}
+  
+  \ifthenelse{abs(\angleA - \angleB) < 180}{%
+    \angleB% Return angleB if angleA is greater
+  }{%
+    \ifthenelse{\angleA < \angleB}{%
+      \angleA% Return angleA if angleB is greater
+    }{%
+      % Handle the case when angleA and angleB are equal or the absolute difference is exactly 180.
+      % You can add code or logic here.
+    }%
+  }%
+}
+
+% Define a macro to convert negative angles to positive angles
+
+
+
+
+\newcommand{\compareNumbers}[2]{%
+  \pgfmathtruncatemacro{\absdiff}{abs(\addIfNegative{#1} - \addIfNegative{#2})}
+  \pgfmathsetmacro{\result}{%
+    ifthenelse(\absdiff > 180, (360 - \absdiff)/2, \absdiff/2)
+  }
+  \result
+}
+\newcommand{\SharedCoordinate}[5]{
+  \pgfmathsetmacro{\angle}{abs(\addIfNegative{#3} - \addIfNegative{#4})/2}
+  \pgfmathsetmacro{\radius}{#5/sin(\angle)}
+  \pgfmathsetmacro{\xcoord}{\radius*cos(\smallest{\addIfNegative{#3}}{\addIfNegative{#4}}+\angle)}
+  \pgfmathsetmacro{\ycoord}{\radius*sin(\smallest{\addIfNegative{#3}}{\addIfNegative{#4}}+\angle)}  
+
+  \coordinate (#1) at ($ (#2) + (\xcoord, \ycoord) $);
+}
+
+\newcommand{\SharedCoordinateD}[5]{
+  \pgfmathsetmacro{\angle}{\compareNumbers{#1}{#2}}
+  \pgfmathsetmacro{\radius}{#5/sin(\angle)}
+  \pgfmathsetmacro{\xcoord}{\radius*cos(\biggest{\addIfNegative{#3}}{\addIfNegative{#4}}+\angle)}
+  \pgfmathsetmacro{\ycoord}{\radius*sin(\biggest{\addIfNegative{#3}}{\addIfNegative{#4}}+\angle)}  
+
+  \coordinate (#1) at ($ (#2) + (\xcoord, \ycoord) $);
+}
+
+\newcommand{\SharedCoordinateB}[5]{
+  \pgfmathsetmacro{\angle}{\fepval\compareNumbers{#3}{#4}}
+  \pgfmathsetmacro{\radius}{#5/sin(\angle)}
+  \pgfmathsetmacro{\xcoord}{\radius*cos(\compareAngles{#3}{#4}+\angle)}
+  \pgfmathsetmacro{\ycoord}{\radius*sin(\compareAngles{#3}{#4}+\angle)}  
+
+  \coordinate (#1) at ($ (#2) + (\xcoord, \ycoord) $);
+}
+
+% \newcommand{\SharedCoordinateA}[5]{
+%   \compareNumbers{#3}{#4}
+%   \pgfmathsetmacro{\angle}{\result}
+%   \compareAngles{#3}{#4}
+%   \pgfmathsetmacro{\radius}{#5/sin(\angle)}
+%   \pgfmathsetmacro{\xcoord}{\radius*cos(\result+\angle)}
+%   \pgfmathsetmacro{\ycoord}{\radius*sin(\result+\angle)}  
+
+%   \coordinate (#1) at ($ (#2) + (\xcoord, \ycoord) $);
+% }
+% \AtBeginDocument{%
+%   \DTLgnewdb{DV1}%
+% }
+\newcommand{\SharedCoordinateA}[5]{
+  % Calculate the angle based on the difference between #3 and #4
+  \pgfmathsetmacro{\angle}{abs(#3 - #4) > 180 ? 360 - abs(#3 - #4) : abs(#3 - #4)}
+
+  % Calculate the radius
+  \pgfmathsetmacro{\radius}{#5 / sin(\angle)}
+
+  % Calculate the x and y coordinates
+  \pgfmathsetmacro{\xcoord}{\radius * cos(\angle + #3)}
+  \pgfmathsetmacro{\ycoord}{\radius * sin(\angle + #3)}
+
+  % Define the coordinate
+  \coordinate (#1) at ($ (#2) + (\xcoord, \ycoord) $);
+}
+
+\begin{document}
+
+% \compareNumbers{0}{200}
+% \compareAngles{0}{200}
+% \compareAngles{-10}{90}
+% \compareNumbers{0}{90}
+% \tikzmath{\r1=0.05; \rr=0.01; }
+% \TTest{10}{20}
+% \Smallest{10}{30}
+% \begin{tikzpicture}
+%   \firstvertex{V1}{f,B,F}{-180,-90,0}
+%   % \Labels{V1}{q}{left}{1.15}
+%   \vertex{V2}{V1}{2}{f,F}{-180,0}
+%   \ParticleLabel{V1}{90}{midway=0.4}{1.15}{test}
+%   % \SharedCoordinate{S11}{V1}{-180}{-90}{0.3}
+%   % \draw[fill=red,draw=red] (S11) circle [radius=\r1];
+%   % \SharedCoordinate{S11}{V2}{-180}{90}{0.3}
+%   % \draw[fill=red,draw=red] (S11) circle [radius=\r1];
+% \end{tikzpicture}
+
+
+
+% \begin{tikzpicture}
+%   \Labels{V1}{q}{left}{1.15}
+% \end{tikzpicture}
+
+\begin{tikzpicture}
+  \firstvertex{V1}{f,f,F}{0,110,200}
+  \vertex{V2}{V1}{1}{G,G}{45,-45}
+  \vertex{V3}{V2}{1}{G,G}{45,-30}
+
+  \SharedCoordinate{S1}{V1}{200}{110}{0.4}
+  \draw[fill=red,draw=red] (S1) circle [radius=\r1];
+  
+  \SharedCoordinate{S11}{V1}{0}{200}{0.4}
+  \draw[fill=red,draw=red] (S11) circle [radius=\r1];
+
+  \SharedCoordinateA{S122}{V1}{0}{200}{0.4}
+  \draw[fill=blue,draw=red] (S122) circle [radius=\r1];
+  
+  % \SharedCoordinate{S2}{V2}{-180}{-45}{0.4}
+  % \draw[fill=red,draw=red] (S2) circle [radius=\r1];
+  
+  % \SharedCoordinate{S3}{V3}{-110}{135}{0.4}
+  % \draw[fill=red,draw=red] (S3) circle [radius=\r1];
+
+  \coordinate (S11) at ($ (V1) + ({2*cos(110+atan(0.4/2))},{2*sin(110+atan(0.4/2))}) $);
+  \draw[fill=red,draw=red] (S11) circle [radius=\r1];
+
+  % \coordinate (S12) at ($ (V1) + 0.2*({2*cos(270},{2*sin(270}) $);
+  % \draw[fill=red,draw=red] (S12) circle [radius=\r1];
+
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  \firstvertex{V1}{g,g,G}{-135,135,0}
+  \vertex{V2}{V1}{3}{F,f}{-45,45}
+  \vertex{V4}{V2}{1}{F,B}{-25,25}
+  \vertex{V3}{V2}{2}{B,f}{-25,25}
+\end{tikzpicture}
+
+% \readlist\ParticleName{f1,F1,g}
+
+% \ParticleName[2]
+% \readlist\Angle{100,200,0}
+% \Angle[1]
+% \DTLnewdb{DV1}
+  
+% \DTLnewrow{DV1}
+% \DTLnewdbentry{DV1}{key}{\ParticleName[1]}
+% \DTLnewdbentry{DV1}{value}{\Angle[1]}
+
+% \DTLnewrow{DV1}
+% \DTLnewdbentry{DV1}{key}{\ParticleName[2]}
+% \DTLnewdbentry{DV1}{value}{\Angle[2]}
+
+% \DTLnewrow{DV1}
+% \DTLnewdbentry{DV1}{key}{\ParticleName[3]}
+% \DTLnewdbentry{DV1}{value}{\Angle[3]}
+
+% \DTLnewrow{DV1}
+% \DTLnewdbentry{DV1}{key}{\ParticleName[4]}
+% \DTLnewdbentry{DV1}{value}{\Angle[4]}
+
+
+
+% \searchDictionary{particles}{f}
+% \begin{tikzpicture}
+%   \coordinate (O) at (0,0);
+%   \VertexStart{V1}{f,F,G}{-180,-90,0}{f1,F1,G1}
+%   \VertexCont{V2}{V1}{0}{G,G}{-45,45}
+%   \VertexCont{V3}{V1}{-90}{f,B}{-90,0}
+%   \VertexCont{V4}{V3}{-90}{f,G}{-180,0}
+%   \draw[color=red, line width = \s, decoration={markings, mark=at position 0.5 with {\arrow{>}}}, postaction={decorate}] (V1)--(V2);
+% \end{tikzpicture}
+
+\end{document}
+
+% \newcommand{\compareAngles}[2]
+% {
+%   \ifnum\fpeval{abs(\addIfNegative{#1} - \addIfNegative{#2}) > 180}=1
+%     \fpeval{#1}
+%     \fpeval{\biggest{\addIfNegative{#1}}{#2}}
+%   \else
+%     \fpeval{\smallest{#1}{#2}}
+%   \fi
+% }
